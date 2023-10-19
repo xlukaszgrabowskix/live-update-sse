@@ -1,0 +1,20 @@
+<script type="text/javascript">
+  const accountId = 'team-event';
+  const sessionId = '1111';
+
+  const eventSource = new EventSource(`/live-status-update/${accountId}/${sessionId}`, { withCredentials: true });
+
+  eventSource.addEventListener(`status-update-${accountId}-${sessionId}`, (e) => {
+    const eventData = JSON.parse(e.data)
+    const message = document.createElement('li');
+    message.innerHTML = `
+      Status has been updated to <strong>${eventData.status}</strong> for sessionId:
+       ${eventData.sessionId} and attendeeKey: ${eventData.attendeeKey}.`;
+    document.body.appendChild(message);
+  });
+
+  eventSource.addEventListener("error", () => {
+    console.error("Subscription error")
+    eventSource.close();
+  });
+</script>
